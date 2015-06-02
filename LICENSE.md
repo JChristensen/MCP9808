@@ -1,5 +1,5 @@
 # Arduino Library for Microchip MCP9808 Temperature Sensor #
-https://github.com/JChristensen/MCP9808
+https://github.com/JChristensen/MCP9808  
 LICENSE file  
 Jack Christensen Jun 2015  
 
