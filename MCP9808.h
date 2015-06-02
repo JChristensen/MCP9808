@@ -4,25 +4,22 @@
  *                                                                             *
  * A lightweight implementation that exposes all functionality of the MCP9808  *
  * sensor.  Temperatures are handled in the integer domain to avoid            *
- * the code size and runtime overhead associated with floating-point. Still,   *
- * it is easy enough to perform the necessary conversions should the user      *
- * wish to work in floating-point format.                                      *
+ * the code size and runtime overhead associated with floating-point.          *
+ * Should the user wish to work in floating-point format, conversion           *
+ * is easily done in the application code.                                     *
  *                                                                             *
- * Temperatures read from the device's registers are returned as °C*16.        *
- * (If the device resolution is set to less than 12 bits, the corresponding    *
- * lower order bits are simply returned as zero.) Temperatures can             *
- * alternately be read as °F*10.                                               *
+ * The ambient temperature is read as °C*16. If a lower resolution             *
+ * is configured, the applicable low-order bits are returned as zeroes.        *
  *                                                                             *
- * When writing the Hysteresis and Limit-Set registers, the value must be      *
- * given as °C*2, which corresponds to the internal representation in these    *
- * registers.                                                                  *
+ * The Upper, Lower and Critical temperature limit registers are read and      *
+ * written as °C*4.                                                            *
  *                                                                             *
- * Bit masks for the control register are provided in the MCP9808.h file.      *
+ * Bit masks for the config register are provided in the MCP9808.h file.       *
  *                                                                             *
  * Jack Christensen 15Apr2015 v1.0                                             *
  *                                                                             *
- * "Arduino library for Microchip MCP9808" by Jack Christensen                 *
- * is licensed under CC BY-SA 4.0,                                             *
+ * "Arduino Library for Microchip MCP9808 Temperature Sensor"                  *
+ * by Jack Christensen is licensed under CC BY-SA 4.0,                         *
  * http://creativecommons.org/licenses/by-sa/4.0/                              *
  *-----------------------------------------------------------------------------*/
 
@@ -72,12 +69,11 @@ class MCP9808
 {
     public:
         MCP9808(uint8_t LS_ADDR_BITS);
-        void
-            begin(twiClockFreq_t twiFreq = twiClock100kHz);
 
         uint8_t
-            read(void),
-            write(void);
+            begin(twiClockFreq_t twiFreq = twiClock100kHz),
+            read(void),     //read all device data
+            write(void);    //write all device registers that are not read-only
         
         int16_t
             tUpper,         //upper temperature limit, in units of 1/4 °C
@@ -86,18 +82,18 @@ class MCP9808
             tAmbient;       //ambient temperature, in units of 1/16 °C
 
         uint16_t
-            config,
-            mfrID;
+            config,         //configuration register
+            mfrID;          //manufacturer ID
             
         uint8_t
-            deviceID,
-            deviceRev,
-            resolution;
+            deviceID,       //device ID
+            deviceRev,      //device revision
+            resolution;     //resolution for tAmbient
             
         bool
-            alertCritical,
-            alertUpper,
-            alertLower;
+            alertCritical,  //tAmbient >= tCritical
+            alertUpper,     //tAmbient > tUpper
+            alertLower;     //tAmbient < tLower
 
     private:
         uint8_t

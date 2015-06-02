@@ -1,8 +1,11 @@
-//To do: Change write() to write one register at a time.
+//"Arduino Library for Microchip MCP9808 Temperature Sensor"
+//by Jack Christensen is licensed under CC BY-SA 4.0,
+//http://creativecommons.org/licenses/by-sa/4.0/
 
 #include <MCP9808.h>
 #include <Streaming.h>    //http://arduiniana.org/libraries/streaming/
 
+//constructor
 //instantiate a temperature sensor object given the least three significant
 //bits (A2:0) of its I2C address (0-7)
 MCP9808::MCP9808(uint8_t LS_ADDR_BITS)
@@ -11,11 +14,11 @@ MCP9808::MCP9808(uint8_t LS_ADDR_BITS)
 }
 
 //initialize
-void MCP9808::begin(twiClockFreq_t twiFreq)
+uint8_t MCP9808::begin(twiClockFreq_t twiFreq)
 {
     Wire.begin();
     TWBR = ( (F_CPU / twiFreq) - 16) / 2;
-    read();
+    return read();
 }
 
 //read all registers from the sensor.
@@ -32,7 +35,7 @@ uint8_t MCP9808::read(void)
     {
         Wire.beginTransmission(_devAddr);
         Wire.write(r);
-        if ( (e = Wire.endTransmission()) != 0 ) return e;
+        if ( (e = Wire.endTransmission(true)) != 0 ) return e;
         Wire.requestFrom(_devAddr, (uint8_t)2);
         *rp++ = Wire.read();
         *rp++ = Wire.read();
@@ -41,16 +44,15 @@ uint8_t MCP9808::read(void)
     //last register is one byte
     Wire.beginTransmission(_devAddr);
     Wire.write(RESOLUTION_REG);
-    if ( (e = Wire.endTransmission()) != 0 ) return e;
-    Wire.endTransmission();
+    if ( (e = Wire.endTransmission(true)) != 0 ) return e;
     Wire.requestFrom(_devAddr, (uint8_t)1);
     *rp = Wire.read();
     
     //assign to class members
     config = ( regs[0] << 8 ) + regs[1];
-    tUpper    = ( ( regs[2] << 11 ) + ( regs[3] << 3 ) ) >> 5;
-    tLower    = ( ( regs[4] << 11 ) + ( regs[5] << 3 ) ) >> 5;
-    tCritical = ( ( regs[6] << 11 ) + ( regs[7] << 3 ) ) >> 5;
+    tUpper    = ( ( regs[2] << 11 ) + ( regs[3] << 3 ) ) >> 3;
+    tLower    = ( ( regs[4] << 11 ) + ( regs[5] << 3 ) ) >> 3;
+    tCritical = ( ( regs[6] << 11 ) + ( regs[7] << 3 ) ) >> 3;
     tAmbient  = ( ( regs[8] << 11 ) + ( regs[9] << 3 ) ) >> 3;
     alertCritical = regs[8] & ALT_CRIT;
     alertUpper    = regs[8] & ALT_UPPER;
@@ -70,22 +72,32 @@ uint8_t MCP9808::write(void)
 {
     uint8_t e = 0;
 
-    //config and temperature registers
-    Wire.beginTransmission(_devAddr);
+    Wire.beginTransmission(_devAddr);       //configuration register
     Wire.write( CONFIG_REG );
     Wire.write( config >> 8 );
     Wire.write( config & 0xFF );
-    Wire.write( tUpper >> 11 );
-    Wire.write( (tUpper << 2) & 0xFF );
-    Wire.write( tLower >> 11 );
-    Wire.write( (tLower << 2) & 0xFF );
-    Wire.write( tCritical >> 11 );
-    Wire.write( (tCritical << 2) & 0xFF );
-    if ( (e = Wire.endTransmission()) != 0 ) return e;
+    if ( (e = Wire.endTransmission(true)) != 0 ) return e;
+
+    Wire.beginTransmission(_devAddr);       //upper limit
+    Wire.write( tUPPER_REG );
+    Wire.write( tUpper >> 6 );
+    Wire.write( tUpper << 2 );
+    if ( (e = Wire.endTransmission(true)) != 0 ) return e;
+
+    Wire.beginTransmission(_devAddr);       //lower limit
+    Wire.write( tLOWER_REG );
+    Wire.write( tLower >> 6 );
+    Wire.write( tLower << 2 );
+    if ( (e = Wire.endTransmission(true)) != 0 ) return e;
+
+    Wire.beginTransmission(_devAddr);       //critical limit
+    Wire.write( tCRITICAL_REG );
+    Wire.write( tCritical >> 6 );
+    Wire.write( tCritical << 2 );
+    if ( (e = Wire.endTransmission(true)) != 0 ) return e;
     
-    //resolution register
-    Wire.beginTransmission(_devAddr);
+    Wire.beginTransmission(_devAddr);       //resolution register
     Wire.write( RESOLUTION_REG );
-    Wire.write( resolution );
-    return Wire.endTransmission();
+    Wire.write( resolution & 0x03 );
+    return Wire.endTransmission(true);
 }
