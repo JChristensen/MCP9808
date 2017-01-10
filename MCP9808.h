@@ -62,12 +62,12 @@ const uint8_t  ALT_CRIT(0x80);
 const uint8_t ALT_UPPER(0x40);
 const uint8_t ALT_LOWER(0x20);
 
-//I2C clock frequencies
-enum twiClockFreq_t { twiClock100kHz = 100000, twiClock400kHz = 400000 };
-
 class MCP9808
 {
     public:
+        //I2C clock frequencies
+        enum twiClockFreq_t { twiClock100kHz = 100000, twiClock400kHz = 400000 };
+
         MCP9808(uint8_t LS_ADDR_BITS);
 
         uint8_t
