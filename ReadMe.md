@@ -8,7 +8,7 @@ Jack Christensen Jun 2015
 ## Introduction ##
 **Arduino Library for Microchip MCP9808 Maximum Accuracy Digital Temperature Sensor**
 
-A lightweight implementation that exposes all functionality of the [Microchip MCP9808 sensor](http://www.microchip.com/wwwproducts/Devices.aspx?dDocName=en020949). Temperatures are handled in the integer domain to avoid the code size and runtime overhead associated with floating-point. Should the user wish to work in floating-point format, conversion is easily done in the application code.
+A lightweight implementation that exposes all functionality of the [Microchip MCP9808 sensor](https://www.microchip.com/wwwproducts/en/mcp9808). Temperatures are handled in the integer domain to avoid the code size and runtime overhead associated with floating-point. Should the user wish to work in floating-point format, conversion is easily done in the application code.
 
 The ambient temperature is read as °C\*16. If a lower resolution is configured, the applicable low-order bits are returned as zeroes.
 
