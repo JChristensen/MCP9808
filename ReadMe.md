@@ -43,8 +43,8 @@ To use the **MCP9808** library, the standard Arduino Wire library must also be i
 #####Description
 Symbolic names for I2C bus speeds.
 #####Values
-- **twiClock100kHz** -- 100kHz bus speed.  
-- **twiClock400kHz** -- 400kHz bus speed.  
+- **MCP9808::twiClock100kHz** -- 100kHz bus speed.  
+- **MCP9808::twiClock400kHz** -- 400kHz bus speed.  
 
 ## Constructor ##
 
@@ -61,15 +61,15 @@ Instantiates an MCP9808 sensor object.
 #####Description
 Initializes the library. Calling begin() calls read() to initially populate the sensor data into local storage. Call this method once in the setup code.
 #####Syntax
-`mySensor.begin(twiClock400kHz);`
+`mySensor.begin(twiClockFreq_t freq);`
 #####Parameters
-**twiFreq:** An optional parameter specifying the speed for the I2C bus. If omitted, it defaults to 100kHz *(twiClockFreq_t)*
+**twiFreq:** An optional parameter specifying the speed for the I2C bus. If omitted, it defaults to 100kHz *(MCP9808::twiClockFreq_t)*
 #####Returns
 I2C status (zero if successful) *(uint8_t)*.
 #####Example
 ```c++
 MCP9808 mySensor(0);
-mySensor.begin(twiClock400kHz);
+mySensor.begin(MCP9808::twiClock400kHz);
 ```
 ###read(void)
 #####Description
