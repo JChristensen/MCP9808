@@ -16,7 +16,7 @@ MCP9808::MCP9808(uint8_t LS_ADDR_BITS)
 uint8_t MCP9808::begin(twiClockFreq_t twiFreq)
 {
     Wire.begin();
-    TWBR = ( (F_CPU / twiFreq) - 16) / 2;
+    Wire.setClock(twiFreq);
     return read();
 }
 

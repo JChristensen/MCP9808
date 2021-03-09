@@ -23,9 +23,6 @@
  * http://creativecommons.org/licenses/by-sa/4.0/                              *
  *-----------------------------------------------------------------------------*/
 
-#ifndef ARDUINO_ARCH_AVR
-    #error "The MCP9808 library only supports the AVR architecture."
-#else
 #ifndef MCP9808_H_INCLUDED
 #define MCP9808_H_INCLUDED
 
@@ -107,5 +104,4 @@ class MCP9808
         uint8_t
             m_devAddr;
 };
-#endif
 #endif
