@@ -49,10 +49,10 @@ uint8_t MCP9808::read()
     
     // assign to class members
     config = ( regs[0] << 8 ) + regs[1];
-    tUpper    = ( ( regs[2] << 11 ) + ( regs[3] << 3 ) ) >> 3;
-    tLower    = ( ( regs[4] << 11 ) + ( regs[5] << 3 ) ) >> 3;
-    tCritical = ( ( regs[6] << 11 ) + ( regs[7] << 3 ) ) >> 3;
-    tAmbient  = ( ( regs[8] << 11 ) + ( regs[9] << 3 ) ) >> 3;
+    tUpper    = (((int16_t)regs[2] << 11) + ((int16_t)regs[3] << 3)) >> 3;
+    tLower    = (((int16_t)regs[4] << 11) + ((int16_t)regs[5] << 3)) >> 3;
+    tCritical = (((int16_t)regs[6] << 11) + ((int16_t)regs[7] << 3)) >> 3;
+    tAmbient  = (((int16_t)regs[8] << 11) + ((int16_t)regs[9] << 3)) >> 3;
     alertCritical = regs[8] & ALT_CRIT;
     alertUpper    = regs[8] & ALT_UPPER;
     alertLower    = regs[8] & ALT_LOWER;
