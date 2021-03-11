@@ -30,8 +30,7 @@ uint8_t MCP9808::read()
     uint8_t e = 0;
 
     // first seven registers are two bytes each
-    for (uint8_t r = CONFIG_REG; r < N_REGS; ++r)
-    {
+    for (uint8_t r = CONFIG_REG; r < N_REGS; ++r) {
         Wire.beginTransmission(m_devAddr);
         Wire.write(r);
         if ( (e = Wire.endTransmission(true)) != 0 ) return e;
